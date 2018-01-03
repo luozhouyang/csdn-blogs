@@ -8,6 +8,7 @@ Google提供的nmt代码开源在GitHub,请访问 [tensorflow/nmt](https://githu
 本博客将带领大家从源码上入手NMT模型,在讲解代码的同时,介绍一些相关的原理.  
 
 本博客是一个系列文章, 分成以下几个部分:  
+
 * [tensorflow/nmt 的开发环境搭建](使用Docker搭建tensorflow开发环境.md)    
 * tensorflow/nmt 的超参数  
 * tensorflow/nmt 的基本模型  
@@ -22,3 +23,7 @@ Google提供的nmt代码开源在GitHub,请访问 [tensorflow/nmt](https://githu
 ## 联系我  
 如果你发现博客内容有不对或者说的不清楚的地方,请联系我,我将第一时间改正,尽我的最大能力将问题讲清楚.  
 我的邮箱: [stupidme.me.lzy@gmail.com](mailto:stupidme.me.lzy@gmail.com)  
+
+以下是我的公众号，不定期和大家分享技术文章．如果你觉得我的文章对你有帮助，麻烦关注一下哟：
+
+![stupidmedotme](wechat_gzh_code_8.jpg)  
