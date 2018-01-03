@@ -14,7 +14,8 @@ tensorflow官方也有安装的文档，建议首先按照官方文档来安装�
 本教程使用的环境如下：　　
 * 系统是Ubuntu 16.04 amd64  
 * 显卡是GTX 1080ti　　
-使用GPU版本的tensorflow需要使用CUDA toolkit，本文后续会有讲解．　　
+
+使用GPU版本的tensorflow需要使用CUDA toolkit，本文后续会有讲解.  
 接下来，可以正式进入到开发环境的搭建过程．　　
 
 ## Docker的安装　　
@@ -83,7 +84,42 @@ $ sudo docker run hello-world
 Docker安装好之后,还需要一定的设置,这些设置可以让你使用的更加舒适.   
 
 #### 使用DaoClould加速  
-
+输入如下命令，即可使用DaoCloud给你的Docker加速：　　
+```bash  
+curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://85f32c34.m.daocloud.io  
+```  
 
 #### 更改Docker镜像存放的路径  
+Docker的镜像默认放在　**/var/lib/docker** 目录下，当镜像越来越多，磁盘空间越发紧张，为此，可以讲镜像存放路径改到大容量的磁盘中去．　　
+用你喜欢的编辑器打开　**/etc/default/docker** 文件，在 **DOCKER_OPTS**选项写上你的自定义路径：　　
+```bash  
+DOCKER_OPTS="-g $YOUR_PATH"
+```  
+修改之后，重启docker:  
+```bash  
+$ systemctl restart docker  
+```  
+
+#### 将用户添加到docker组，免输sudo　　
+此时，Docker已经安装完毕并且可以正常使用了，但是你每次都需要输入sudo．　　
+为了免输sudo，Docker提供了相关的方法，你可以查看官方文档[用户添加到docker组](https://docs.docker.com/engine/installation/linux/linux-postinstall/#manage-docker-as-a-non-root-user)  
+
+简单来说就以下几个步骤：　　
+```bash  
+$ sudo groupadd docker  
+$ sudo usermod -aG docker $USER  
+```  
+
+完成之后，你可以试验以下：　　
+
+```bash  
+docker run hello-world  
+```  
+不出意外，可以运行成功．　　
+
+至此，Docker的安装和配置已经完成．　　
+
+接下来就是Tensorflow GPU版本的安装了．　　
+
+
 
