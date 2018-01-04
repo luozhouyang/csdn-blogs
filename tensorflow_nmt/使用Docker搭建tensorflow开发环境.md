@@ -91,10 +91,13 @@ curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://85f32c34
 
 #### 更改Docker镜像存放的路径  
 Docker的镜像默认放在　**/var/lib/docker** 目录下，当镜像越来越多，磁盘空间越发紧张，为此，可以讲镜像存放路径改到大容量的磁盘中去．　　
+
 用你喜欢的编辑器打开　**/etc/default/docker** 文件，在 **DOCKER_OPTS**选项写上你的自定义路径：　　
+
 ```bash  
 DOCKER_OPTS="-g $YOUR_PATH"
 ```  
+
 修改之后，重启docker:  
 ```bash  
 $ systemctl restart docker  
@@ -102,9 +105,11 @@ $ systemctl restart docker
 
 #### 将用户添加到docker组，免输sudo　　
 此时，Docker已经安装完毕并且可以正常使用了，但是你每次都需要输入sudo．　　
+
 为了免输sudo，Docker提供了相关的方法，你可以查看官方文档[用户添加到docker组](https://docs.docker.com/engine/installation/linux/linux-postinstall/#manage-docker-as-a-non-root-user)  
 
 简单来说就以下几个步骤：　　
+
 ```bash  
 $ sudo groupadd docker  
 $ sudo usermod -aG docker $USER  
