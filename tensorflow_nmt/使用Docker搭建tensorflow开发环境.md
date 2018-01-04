@@ -122,4 +122,61 @@ docker run hello-world
 接下来就是Tensorflow GPU版本的安装了．　　
 
 
+## Tensorflow GPU版本的安装　　　　
+然后，为了能在docker里面使用tensorflow gpu版本，你需要安装nvidia-docker．　　
+安装好之后，就可以拉取tensorflow-gpu镜像，然后启动容易开始开发了．　　
+
+### nvidia-docker的安装　　
+nvidia-docker的安装官方也提供了文档，建议先查看官方文档: [nvidia-docker installation](https://github.com/NVIDIA/nvidia-docker)  
+
+在此给出Ubuntu 16.04 版本的apt安装方式：　　
+```bash
+# If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
+docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
+sudo apt-get purge -y nvidia-docker
+
+# Add the package repositories
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+
+# Install nvidia-docker2 and reload the Docker daemon configuration
+sudo apt-get install -y nvidia-docker2
+sudo pkill -SIGHUP dockerd
+
+# Test nvidia-smi with the latest official CUDA image
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+```  
+至此，nvidia-docker安装好了．　　
+
+### 拉取镜像并运行　　
+根据tensorflow的官方文档，可以按照以下命令启动容器：　
+
+```bash  
+$ nvidia-docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow:latest-gpu bash
+```  
+
+但是本人经过实验并不能成功，忘记是什么原因导致的了，估计是网络原因．　　
+解决这个问题也很简单，tensorflow会上传镜像到docker hub，我们用docker hub里面拉取镜像即可．　
+这里可以查看所有的tensorflow 标签: [tensorflow tags](https://hub.docker.com/r/tensorflow/tensorflow/tags/)  
+　
+我们修改命令如下：　　
+
+```bash  
+$ nvidia-docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu-py3 bash
+```  
+这将启动一个新的容器，你可以在里面开始进行开发啦．　　
+该容器的python版本是3.ｘ的，你可以测试一下，如果你需要安装py2.x的，将上面命令最后的 **latest-gpu-py3** 改成　**latest-gpu** 即可．　　
+
+至此，tensorflow gpu版本的开发环境已经配置好了！可以进行开发了！
+
+## 联系我  
+如果你发现博客内容有不对或者说的不清楚的地方,请联系我,我将第一时间改正,尽我的最大能力将问题讲清楚.  
+我的邮箱: [stupidme.me.lzy@gmail.com](mailto:stupidme.me.lzy@gmail.com)  
+
+以下是我的公众号，不定期和大家分享技术文章．如果你觉得我的文章对你有帮助，麻烦关注一下哟：
+
+![stupidmedotme](wechat_gzh_code_8.jpg)  
 
