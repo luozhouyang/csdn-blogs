@@ -170,6 +170,8 @@ $ nvidia-docker run -it -p 8888:8888 tensorflow/tensorflow:latest-gpu-py3 bash
 这将启动一个新的容器，你可以在里面开始进行开发啦．　　
 该容器的python版本是3.ｘ的，你可以测试一下，如果你需要安装py2.x的，将上面命令最后的 **latest-gpu-py3** 改成　**latest-gpu** 即可．　　
 
+值得注意的是，使用tensorflow gpu版本的容器，**必须要用nvidia-docker而不是docker命令** 启动容器，**否则会提示找不到 libcuda8.0.so libcudnn6.0.so** 等问题！！！
+
 至此，tensorflow gpu版本的开发环境已经配置好了！可以进行开发了！
 
 ## 联系我  
