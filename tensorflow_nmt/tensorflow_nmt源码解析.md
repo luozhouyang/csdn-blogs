@@ -10,6 +10,7 @@ Google提供的nmt代码开源在GitHub,请访问 [tensorflow/nmt](https://githu
 本博客是一个系列文章, 分成以下几个部分:  
 
 * [tensorflow/nmt 的开发环境搭建](使用Docker搭建tensorflow开发环境.md)  
+* [tensorflow/nmt 的整体结构](tensorflow_nmt的整体结构.md)  
 * [tensorflow/nmt 的超参数](tensorflow_nmt的超参数.md)    
 * tensorflow/nmt 的基本模型  
 * tensorflow/nmt 的attention模型  
