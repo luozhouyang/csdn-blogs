@@ -45,6 +45,44 @@
 |`--eos`|`str`|`</s>`|End-of-sentence symbol|  
 |`--share_vocab`|`str`|`False`|whether use the same vocab between source and target|  
 |`--check_special_token`|`bool`|`True`|whether check special sos, eos, unk tokens exist in the vocab files|  
+|`--src_max_len`|`int`|50|max length of source sequence during training|  
+|`--tgt_max_len`|`int`|50|max length of target sequence during training|   
+|`--src_max_len_infer`|`int`|`None`|max length of source sequence during inference|  
+|`--tgt_max_len_infer`|`int`|`None`|max length of target sequence during inference|  
+|`--unit_type`|`str`|`lstm`|one of `lstm`, `gru`, `layer_norm_lstm`, `nas`|  
+|`--forget_bias`|`float`|1.0|forget bias for BasicLSTMCell|  
+|`--dropout`|`float`|0.2|dropout rate|  
+|`--max_gradient_norm`|`float`|5.0|clip gradients to this norm|  
+|`--batch_size`|`int`|128|batch size|  
+|`--steps_per_stats`|`int`|100|how many training steps to do per stats logging|  
+|`--max_train`|`int`|0|limit on the size of training data(0: no limit)|  
+|`--num_buckets`|`int`|5|put data into similar-length buckets|  
+|`--subword_option`|`str`|`""`|one of `""`, `bpe`, `spm`|  
+|`--num_gpus`|`int`|1|number of gpus in each worker|  
+|`--log_device_placement`|`bool`|`False`|debug gpu allocation|  
+|`--metrics`|`str`|`bleu`|comma-separated list of evaluations|  
+|`--steps_per_external_eval`|`int`|`None`|how many training steps to do per external evaluation|  
+|`--scope`|`str`|`None`|scope to put variables under|  
+|`--hparams_path`|`str`|`None`|path to hparams json file|  
+|`--random_seed`|`int`|`None`|random seed|  
+|`--override_loadded_hparams`|`bool`|`Flase`|override loaded hparams with values specified|  
+|`--num_keep_ckpts`|`int`|5|max number of checkpoints to keep|  
+|`--avg_ckpts`|`bool`|`False`|average the last N checkpoints for external evaluation|  
+|`--ckpt`|`str`|`""`|checkpoint file to load a model for inference|  
+|`--inference_input_file`|`str`|`None`|set to the text decode|  
+|`--inference_list`|`str`|`None`|a comma-separated list of sentence indices|  
+|`--infer_batch_size`|`int`|32|batch size for inference mode|  
+|`--inference_ouput_file`|`str`|`None`|output file to store decoding results|  
+|`--inference_ref_file`|`str`|`None`|reference file to compute evaluation scores|  
+|`--beam_width`|`int`|0|beam width when using beam search decoder|  
+|`--length_penalty_weight`|`float`|0.0|length penalty for beam search|  
+|`--sampling_temperature`|`float`|0.0|softmax sampling temperature for inference decoding|  
+|`--num_translations_per_input`|`int`|1|number of translations generated for each sentence|  
+|`--jobid`|`int`|0|task if of the worker|  
+|`--num_workers`|`int`|1|number of workers(inference only)|  
+|`--num_inter_threads`|`int`|0|number of inter_op_parallelism_threads|  
+|`--num_train_threads`|`int`|0|number of intra_op_parallelism_threads|  
+
 
 
 ## 逐条详解　　
