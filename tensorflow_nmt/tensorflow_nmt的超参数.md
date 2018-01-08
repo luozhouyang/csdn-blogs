@@ -111,6 +111,26 @@
 
 
 ## 注意事项　　
+训练该模型，对机器的要求比较高。本人尝试过使用公司配的开发机器配置如下：　　
+* Platform Windows 7 x64  
+* Memory 8G  
+* CPU intel core i5-6500  
+* GPU GTX950 2G x1  
+
+此配置在我改小了batch_size到32之后，还是报错　Out of memoey.  
+在服务器配置如下：　　
+* Platform Ubuntu16.04 amd64  
+* Memory 32G  
+* CPU intel core i7-7700k  
+* GPU GTX1080ti 11G x1  
+
+上训练普通模型，并且将batch_size设置成默认的128，可以正常训练，但是此配置训练GNMT模型报错OOM。  　　
+  
+这里也就说明一个小技巧：　改小batch_size可以降低显存使用。  
+  
+当然其他维度的降低也可以降低显存使用　　
+
+
 
 
 ## 扩展－－分布式训练　　
