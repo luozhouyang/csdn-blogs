@@ -81,11 +81,30 @@
 |`--jobid`|`int`|0|task if of the worker|  
 |`--num_workers`|`int`|1|number of workers(inference only)|  
 |`--num_inter_threads`|`int`|0|number of inter_op_parallelism_threads|  
-|`--num_train_threads`|`int`|0|number of intra_op_parallelism_threads|  
-
-
+|`--num_train_threads`|`int`|0|number of intra_op_parallelism_threads|   
 
 ## 逐条详解　　
+上一小节列出了所有的超参数，接下来我将分组进行更加详细的解释。　　
+
+### 数据相关参数　　
+本小节介绍数据相关的参数：　　
+* `--src`  
+该参数指定训练数据中，源数据的文件后缀名。举个例子，我们的训练数据是一对逐行一一对应的文本文件，分别为**address_train.ocr**和**address_train.std**，那么此时我们需要指定该参数为：　`--src=ocr` 　
+* `--tgt`  
+该参数指定训练数据中，目标数据的文件后缀名，按照上面的举例，我们需要指定该参数为：　`--tgt=std`  
+* `--train_prefix`  
+该参数是train数据文件的前缀，注意 **需要包含完整路径** ，路径可以是相对路径，也可以是绝对路径。举个例子，上述例子的两个文件我们放在 **/tmp/nmt_model** 目录下面，那么该参数需要设置为:`--train_prefix=/tmp/nmt_model/address_train`，那么train数据的完整路径就是: **/tmp/nmt_model/address_train.ocr** 和 **/tmp/nmt_model/address_train.std**    
+* `--dev_prefix`  
+该参数指定dev数据文件的前缀，同`--train_prefix`类似。举个例子，在 **/tmp/nmt_model** 目录下面存放我们的dev数据文件 **address_dev.ocr**　和　**address_dev.std**，那么该参数应该指定为：　`--dev_prefix=/tmp/nmt_model/address_dev`  
+* `--test_prefix`  
+该参数是test数据文件的前缀，其他和上述`--train_prefix`，`--dev_prefix`类似。　　
+* `--vocab_prefix`  
+该参数指定的是词典文件的前缀，注意　**需要包含完整路径**　，可以是相对路径也可以是绝对路径。举个例子，我们的词典文件为 **vocab.ocr**　和　**vocab.std** ，位于 **/tmp/nmt_model/** 那么该参数应该指定为:`--vocab_prefix=/tmp/nmt_model/vocab`，最终的词典路径为　**/tmp/nmt_model/vocab.ocr** 和　**/tmp/nmt_model/vocab.std**　。　　
+* `--embed_prefix`  
+该参数指定已经训练好的embedding文件，必须是Glove文件格式。如果没有，使用默认值`None`。　　
+* `--out_dir`  
+该参数指定模型的保存路径。比如你想保存在　**/tmp/** 目录下，那你这样指定:`--out_dir=/tmp` 。　　
+
 
 
 ## 超参数的使用　　
