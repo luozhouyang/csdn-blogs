@@ -32,6 +32,13 @@ if __name__ == "__main__":
 
 详细代码就不贴了。你可以到**nmt/nmt.py**文件查看。　　
 
+```flow  
+start=>start:Start
+end=>end:End  
+
+```  
+
+
 ## 训练流程　　
 
 
