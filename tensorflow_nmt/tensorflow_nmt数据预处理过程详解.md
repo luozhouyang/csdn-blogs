@@ -42,7 +42,28 @@ tgt_dataset=tf.data.TextLineDataset('tgt_data.txt')
 ```  
 这就是上述函数中的两个参数`src_dataset`和`tgt_dataset`的由来。  
 
-`src_vocab_table`和`tgt_vocab_table`是什么呢？
+`src_vocab_table`和`tgt_vocab_table`是什么呢？同样顾名思义，就是这两个分别代表**源数据词典的查找表**和**目标数据词典的查找表**，实际上查找表就是一个**字符串**到**数字**的映射关系。当然，如果我们的源数据和目标数据使用的是同一个词典，那么这两个查找表的内容是一模一样的。很容易想到，肯定也有一种**数字**到**字符串**的映射表，这是肯定的，因为神经网络的数据是数字，而我们需要的目标数据是字符串，因此它们之间肯定有一个转换的过程，这个时候，就需要我们的**reverse_vocab_table**来作用了。  
+
+我们看看这两个表是怎么构建出来的呢？代码很简单，利用tensorflow库中定义的**lookup_ops**即可：  
+```python  
+def create_vocab_tables(src_vocab_file, tgt_vocab_file, share_vocab):
+  """Creates vocab tables for src_vocab_file and tgt_vocab_file."""
+  src_vocab_table = lookup_ops.index_table_from_file(
+      src_vocab_file, default_value=UNK_ID)
+  if share_vocab:
+    tgt_vocab_table = src_vocab_table
+  else:
+    tgt_vocab_table = lookup_ops.index_table_from_file(
+        tgt_vocab_file, default_value=UNK_ID)
+  return src_vocab_table, tgt_vocab_table
+```  
+我们可以发现，创建这两个表的过程，就是将词典中的每一个词，对应一个数字，然后返回这些数字的集合，这就是所谓的词典查找表。**效果上来说，就是对词典中的每一个词，从0开始递增的分配一个数字给这个词**。  
+
+那么到这里你有可能会有疑问，我们**词典中的词**和我们**自定义的标记`sos`等**是不是有可能被映射为同一个整数而造成冲突？这个问题该如何解决？聪明如你，这个问题是存在的。那么我们的项目是如何解决的呢？很简单，那就是将我们**自定义的标记**当成**词典的单词**，然后**加入到词典文件中**，这样一来，`lookup_ops`操作就把标记当成单词处理了，也就就解决了冲突！  
+
+具体的过程，本文后面会有一个例子，可以为您呈现具体过程。  
+如果我们指定了`share_vocab`参数，那么返回的源单词查找表和目标单词查找表是一样的。我们还可以指定一个**default_value**，在这里是`UNK_ID`，实际上就是`0`。如果不指定，那么默认值为`-1`。这就是查找表的创建过程。如果你想具体的知道其代码实现，可以跳转到tensorflow的C++核心部分查看代码（使用PyCharm或者类似的IDE）。  
+  
 
 ### 数据集的处理过程  
 
@@ -101,12 +122,108 @@ if not output_buffer_size:
 ```  
 我们逐步来分析，这个过程到底做了什么，**数据张量**又是如何变化的。  
 
+我们知道，对于源数据和目标数据，每一行数据，我们都可以使用一些标记来表示数据的开始和结束，在本项目中，我们可以通过`sos`和`eos`两个参数指定句子**开始标记**和**结束标记**，默认值分别为**<s>**和**</s>**。本部分代码一开始就是将这两个句子标记表示成一个整数，代码如下：  
+```python
+src_eos_id = tf.cast(src_vocab_table.lookup(tf.constant(eos)), tf.int32)
+tgt_sos_id = tf.cast(tgt_vocab_table.lookup(tf.constant(sos)), tf.int32)
+tgt_eos_id = tf.cast(tgt_vocab_table.lookup(tf.constant(eos)), tf.int32)
+```  
+过程很简单，就是通过两个**字符串到整形**的**查找表**，根据`sos`和`eos`的字符串，找到对应的整数，用改整数来表示这两个标记，并且将这两个整数转型为int32类型。  
+接下来做的是一些常规操作，解释如注释：  
+```python  
+# 通过zip操作将源数据集和目标数据集合并在一起
+# 此时的张量变化 [src_dataset] + [tgt_dataset] ---> [src_dataset, tgt_dataset]
+src_tgt_dataset = tf.data.Dataset.zip((src_dataset, tgt_dataset))
+# 数据集分片，分布式训练的时候可以分片来提高训练速度
+src_tgt_dataset = src_tgt_dataset.shard(num_shards, shard_index)
+if skip_count is not None:
+  # 跳过数据，比如一些文件的头尾信息行
+src_tgt_dataset = src_tgt_dataset.skip(skip_count)
+# 随机打乱数据，切断相邻数据之间的联系
+# 根据文档，该步骤要尽早完成，完成该步骤之后在进行其他的数据集操作
+src_tgt_dataset = src_tgt_dataset.shuffle(
+      output_buffer_size, random_seed, reshuffle_each_iteration)
+```   
+  
+接下来就是重点了，我将用注释的形式给大家解释：  
+```python  
+  # 将每一行数据，根据“空格”切分开来
+  # 这个步骤可以并发处理，用num_parallel_calls指定并发量
+  # 通过prefetch来预获取一定数据到缓冲区，提升数据吞吐能力
+  # 张量变化举例 ['上海　浦东', '上海　浦东'] ---> [['上海', '浦东'], ['上海', '浦东']]
+  src_tgt_dataset = src_tgt_dataset.map(
+      lambda src, tgt: (
+          tf.string_split([src]).values, tf.string_split([tgt]).values),
+      num_parallel_calls=num_parallel_calls).prefetch(output_buffer_size)
+  # 过滤掉长度为0的数据
+  src_tgt_dataset = src_tgt_dataset.filter(
+      lambda src, tgt: tf.logical_and(tf.size(src) > 0, tf.size(tgt) > 0))
+　# 限制源数据最大长度
+  if src_max_len:
+    src_tgt_dataset = src_tgt_dataset.map(
+        lambda src, tgt: (src[:src_max_len], tgt),
+        num_parallel_calls=num_parallel_calls).prefetch(output_buffer_size)
+　# 限制目标数据的最大长度
+  if tgt_max_len:
+    src_tgt_dataset = src_tgt_dataset.map(
+        lambda src, tgt: (src, tgt[:tgt_max_len]),
+        num_parallel_calls=num_parallel_calls).prefetch(output_buffer_size)
 
+  # 通过map操作将字符串转换为数字
+  # 张量变化举例 [['上海', '浦东'], ['上海', '浦东']] ---> [[1, 2], [1, 2]]
+  src_tgt_dataset = src_tgt_dataset.map(
+      lambda src, tgt: (tf.cast(src_vocab_table.lookup(src), tf.int32),
+                        tf.cast(tgt_vocab_table.lookup(tgt), tf.int32)),
+      num_parallel_calls=num_parallel_calls).prefetch(output_buffer_size)
+  # 给目标数据加上 sos, eos　标记
+  # 张量变化举例 [[1, 2], [1, 2]] ---> [[1, 2], [sos_id, 1, 2], [1, 2, eos_id]]
+  src_tgt_dataset = src_tgt_dataset.map(
+      lambda src, tgt: (src,
+                        tf.concat(([tgt_sos_id], tgt), 0),
+                        tf.concat((tgt, [tgt_eos_id]), 0)),
+      num_parallel_calls=num_parallel_calls).prefetch(output_buffer_size)
+  # 增加长度信息
+  # 张量变化举例 [[1, 2], [sos_id, 1, 2], [1, 2, eos_id]] ---> [[1, 2], [sos_id, 1, 2], [1, 2, eos_id], [src_size], [tgt_size]]
+  src_tgt_dataset = src_tgt_dataset.map(
+      lambda src, tgt_in, tgt_out: (
+          src, tgt_in, tgt_out, tf.size(src), tf.size(tgt_in)),
+      num_parallel_calls=num_parallel_calls).prefetch(output_buffer_size)
+```  
+其实到这里，基本上数据已经处理好了，可以拿去训练了。但是有一个问题，那就是我们的每一行数据长度大小不一。这样拿去训练其实是需要很大的运算量的，那么有没有办法优化一下呢？有的，那就是**数据对齐处理**。  
 
 ### 如何对齐数据  
+数据对齐的代码如下，使用注释的方式来解释代码：  
+```python  
+# 参数x实际上就是我们的 dataset 对象
+def batching_func(x):
+    # 调用dataset的padded_batch方法，对齐的同时，也对数据集进行分批
+    return x.padded_batch(
+        batch_size,
+        # 对齐数据的形状
+        padded_shapes=(
+            # 因为数据长度不定，因此设置None
+            tf.TensorShape([None]),  # src
+            # 因为数据长度不定，因此设置None
+            tf.TensorShape([None]),  # tgt_input
+            # 因为数据长度不定，因此设置None
+            tf.TensorShape([None]),  # tgt_output
+            # 数据长度张量，实际上不需要对齐
+            tf.TensorShape([]),  # src_len
+            tf.TensorShape([])),  # tgt_len
+        # 对齐数据的值
+        padding_values=(
+            # 用src_eos_id填充到 src 的末尾
+            src_eos_id,  # src
+            # 用tgt_eos_id填充到 tgt_input 的末尾
+            tgt_eos_id,  # tgt_input
+            # 用tgt_eos_id填充到 tgt_output 的末尾
+            tgt_eos_id,  # tgt_output
+            0,  # src_len -- unused
+            0))  # tgt_len -- unused
+```  
+这样就完成了数据的对齐，并且将数据集按照`batch_size`完成了分批。  
 
-
-### num_buckets到底起什么作用  
+### num_buckets分桶到底起什么作用  
 `num_buckets`起作用的代码如下：　　
 ```python   
   if num_buckets > 1:
@@ -154,3 +271,14 @@ if not output_buffer_size:
 回到一开始，如果我们的参数`num_bucktes`不满足条件呢？那就直接做对齐操作！看代码便知！  
 至此，分桶的过程和作用你已经清楚了。  
 
+---  
+至此，数据处理已经结束了。接下来就可以从处理好的数据集获取一批一批的数据来训练了。  
+那么如何一批一批获取数据呢？答案是使用**迭代器**。获取Dataset的迭代器很简单，tensorflow提供了API，代码如下：  
+```python  
+  batched_iter = batched_dataset.make_initializable_iterator()
+  (src_ids, tgt_input_ids, tgt_output_ids, src_seq_len,
+   tgt_seq_len) = (batched_iter.get_next())
+```  
+通过迭代器的`get_next()`方法，就可以获取之前我们处理好的批量数据啦！  
+
+tensorflow nmt的数据预处理过程已经结束了。欢迎和我交流。
