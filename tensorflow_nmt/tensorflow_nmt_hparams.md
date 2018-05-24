@@ -88,6 +88,42 @@
 
 ### 数据相关参数　　
 本小节介绍数据相关的参数：　　
+* `--num_units`　　
+网络节点数量  
+* `--num_layers`  
+网络的层数，即网络深度  
+* `--num_encoder_layers`  
+编码器的网络层数  
+* `--num_decoder_layers`  
+解码器的网络层数  
+* `--encoder_type`  
+编码器的类型，`uni`, `bi`, `gnmt`三者之一，编码器的类型会对结果有较大影响。  
+* `--residual`  
+是否采用双向连接  
+* `--time_major`  
+是否是时间主要模式，如果是，运算过程中会有一个矩阵转置运算  
+* `--num_embeddings_partitions`  
+词嵌入的分片数量  
+* `--attention`  
+attention机制的类型，可选项。`luong|scaled_luong|bahdanau|normed_bahdanau|`  
+* `--attention_architecture`  
+attention架构，可选`standard|gnmt|gnmt_v2`  
+* `--output_attention`  
+是否在输出单元使用attention，只有`standard`架构的attention能够使用  
+* `--pass_hidden_state`  
+是否将编码器的隐藏状态传递给解码器，只有在attention机制模型可用  
+* `--optimizer`  
+优化器，可选`sgd|adam`，默认是`sgd`，即**随机梯度下降**  
+* `--learning_rate`  
+学习率，默认值`1.0`，如果使用`adam`优化器，可选值为`0.001|0.0001`  
+* `warmup_steps`  
+预热学习率的步数  
+* `warmup_shceme`  
+预热学习率的方式，默认是`t2t`即tensor2tensor的方式  
+* `--decay_scheme`  
+学习率衰减方式，可选`luong234|luong5|luong10`，具体过程请看注释，位于`nmt.py`文件  
+* `--num_train_steps`  
+训练的轮数  
 * `--src`  
 该参数指定训练数据中，源数据的文件后缀名。举个例子，我们的训练数据是一对逐行一一对应的文本文件，分别为**address_train.ocr**和**address_train.std**，那么此时我们需要指定该参数为：　`--src=ocr` 　
 * `--tgt`  
@@ -103,11 +139,73 @@
 * `--embed_prefix`  
 该参数指定已经训练好的embedding文件，必须是Glove文件格式。如果没有，使用默认值`None`。　　
 * `--out_dir`  
-该参数指定模型的保存路径。比如你想保存在　**/tmp/** 目录下，那你这样指定:`--out_dir=/tmp` 。　　
-
-
-
-## 超参数的使用　　
+该参数指定模型的保存路径。比如你想保存在　**/tmp/** 目录下，那你这样指定:`--out_dir=/tmp` 。  
+* `--sos`  
+句子开始的标记，默认是`<s>`  
+* `--eos`  
+句子结束的标记，默认是`</s>`  
+* `--share_vocab`  
+训练的源文件和目标文件是否使用一样的词典  
+* `--check_special_token`  
+是否检查特殊标记  
+* `--src_max_len`  
+源句子的最大词语数量  
+* `--tgt_max_len`  
+目标句子的最大词语数量  
+* `--src_max_len_infer`  
+推断的源句子最大词语数量  
+* `--tgt_max_len_infer`  
+推断的目标句子最大词语数量  
+* `--unit_type`  
+编码器和解码器的神经网络单元类型，可选`lstm|gru|layer_norm_lstm|nas`  
+* `--forget_bias`  
+遗忘门的偏置，默认`1.0`  
+* `--dropout`  
+丢弃率，有效防止过拟合  
+* `--max_gradient_norm`  
+将梯度剪裁到指定的标准  
+* `--batch_size`  
+批大小，全部计算梯度耗时耗力，使用小批量数据计算梯度能有效提升速率和准确率  
+* `--steps_per_stats`  
+多少步输出一次状态  
+* `--max_train`  
+限制悬链的数量，一般不需要设置  
+* `--num_buckets`  
+分桶数量，分桶策略请见后面的文章，会有分析  
+* `--num_gpus`  
+GPU数量，用于分布式训练  
+* `--log_device_placement`  
+是否输出设备信息   
+* `--metrics`  
+评分方式，默认`BLEU`  
+* `--scope`  
+变量的域，默认`translate`  
+* `--random_seed`  
+随机种子，在对数据集乱序的时候有用，也可以不指定  
+* `--num_keep_ckpts`  
+保存最近的checkpoints的数量，默认`5`  
+* `--avg_ckpts`  
+是否均值保存点。可以提高性能  
+* `--ckpt`  
+用于推断的时候，指定某个保存点来推断数据。默认采用评分最高的  
+* `--inference_input_file`  
+推断的输入文件  
+* `--inference_list`  
+指定输入文件的某些行，用来推断  
+* `--infer_batch_size`  
+推断的批大小  
+* `--inference_output_file`  
+推断的输出结果文件  
+* `--inference_ref_file`  
+如果提供，用来计算推断结果的得分  
+* `--beam_width`  
+beam search的宽度  
+* `--num_translations_per_input`  
+每个句子输出推断结果的数量，即可以输出多个结果  
+* `--jobid`  
+当前任务的id，用于分布式训练  
+* `--num_works`  
+workers数量  
 
 
 ## 注意事项　　
@@ -131,7 +229,4 @@
 当然其他维度的降低也可以降低显存使用　　
 
 
-
-
-## 扩展－－分布式训练　　
 
