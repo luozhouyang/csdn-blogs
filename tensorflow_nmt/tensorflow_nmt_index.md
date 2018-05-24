@@ -2,7 +2,7 @@
 > 声明
 > 本系列博客由 **罗周杨** [stupidme.me.lzy@gmail.com](mailto:stupidme.me.lzy@gmail.com) 原创，同步更新在多个平台，包括：  
 > [csdn/stupid_3](http://blog.csdn.net/stupid_3/article/details/78956470)  
-> [github/luozhouyang](https://github.com/luozhouyang/csdn-blogs/blob/master/tensorflow_nmt/tensorflow_nmt%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.md)  
+> [github/luozhouyang](https://github.com/luozhouyang/csdn-blogs/blob/master/tensorflow_nmt/tensorflow_nmt_index.md)  
 > 分享或转载请注明作者和原出处。　　
 
 
