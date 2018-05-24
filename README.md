@@ -3,7 +3,7 @@
 
 博客主要分为以下几个系列：　　
 
-* [Tensorflow nmt源码解析](tensorflow_nmt/tensorflow_nmt源码解析.md)  
+* [Tensorflow nmt源码解析](tensorflow_nmt/tensorflow_nmt_index.md)  
 * [Go语言](golang/README.md)  
 * [Java语言](java/README.md)  　　
 * [Android应用](android/README.md)    
