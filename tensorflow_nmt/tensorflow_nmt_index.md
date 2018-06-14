@@ -20,14 +20,14 @@ Google提供的nmt代码开源在GitHub,请访问 [tensorflow/nmt](https://githu
 * [tensorflow/nmt 的整体结构](tensorflow_nmt_arch.md)  
 * [tensorflow/nmt 的超参数](tensorflow_nmt_hparams.md)    
 * [tensorflow/nmt 的数据处理过程](tensorflow_nmt_dataset_process.md)  
-* tensorflow/nmt 的基本模型  
-* tensorflow/nmt 的attention模型  
-* tensorflow/nmt 的gnmt模型  
-* tensorflow/nmt 的训练模型  
-* tensorflow/nmt 的推断模型    
-* tensorflow/nmt 的训练示例    
-* tensorflow/nmt 的推断示例    
-* tensorflow/nmt 的模型部署到tensorflow serving    
+* [tensorflow/nmt 的基本模型](tensorflow_nmt_standard_model.md)  
+* [tensorflow/nmt 的attention模型](tensorflow_nmt_attention_model.md)  
+* [tensorflow/nmt 的gnmt模型](tensorflow_nmt_gnmt_model.md)  
+* [tensorflow/nmt 的模型训练过程](tensorflow_nmt_training_process.md)  
+* [tensorflow/nmt 的模型推断过程](tensorflow_nmt_inference_process.md)    
+* [tensorflow/nmt 的训练示例](tensorflow_nmt_training_example.md)    
+* [tensorflow/nmt 的推断示例](tensorflow_nmt_inference_example.md)    
+* [tensorflow/nmt 的模型部署到tensorflow serving](tensorflow_nmt_serve_model_by_serving.md)    
 
 ## 联系我  
 如果你发现博客内容有不对或者说的不清楚的地方，请联系我，我将第一时间改正，尽我的最大能力将问题讲清楚。  
