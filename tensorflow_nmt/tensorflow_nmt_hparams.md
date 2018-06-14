@@ -99,7 +99,7 @@
 * `--encoder_type`  
 编码器的类型，`uni`, `bi`, `gnmt`三者之一，编码器的类型会对结果有较大影响。  
 * `--residual`  
-是否采用双向连接  
+是否采残差网络  
 * `--time_major`  
 是否是时间主要模式，如果是，运算过程中会有一个矩阵转置运算  
 * `--num_embeddings_partitions`  
@@ -165,11 +165,11 @@ attention架构，可选`standard|gnmt|gnmt_v2`
 * `--max_gradient_norm`  
 将梯度剪裁到指定的标准  
 * `--batch_size`  
-批大小，全部计算梯度耗时耗力，使用小批量数据计算梯度能有效提升速率和准确率  
+批大小，全部计算梯度耗时耗力，使用小批量数据计算梯度能有效提升速率  
 * `--steps_per_stats`  
 多少步输出一次状态  
 * `--max_train`  
-限制悬链的数量，一般不需要设置  
+限制训练的数量，一般不需要设置  
 * `--num_buckets`  
 分桶数量，分桶策略请见后面的文章，会有分析  
 * `--num_gpus`  
