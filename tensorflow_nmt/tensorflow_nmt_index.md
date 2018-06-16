@@ -27,7 +27,7 @@ Google提供的nmt代码开源在GitHub,请访问 [tensorflow/nmt](https://githu
 * [tensorflow/nmt 的模型推断过程](tensorflow_nmt_inference_process.md)    
 * [tensorflow/nmt 的训练示例](tensorflow_nmt_training_example.md)    
 * [tensorflow/nmt 的推断示例](tensorflow_nmt_inference_example.md)    
-* [tensorflow/nmt 的模型部署到tensorflow serving](tensorflow_nmt_serve_model_by_serving.md)    
+* [tensorflow/nmt 的模型部署到tensorflow serving](tensorflow_nmt_serve_models_by_serving.md)    
 
 ## 联系我  
 如果你发现博客内容有不对或者说的不清楚的地方，请联系我，我将第一时间改正，尽我的最大能力将问题讲清楚。  
