@@ -18,7 +18,8 @@ Google提供的nmt代码开源在GitHub,请访问 [tensorflow/nmt](https://githu
 
 * [tensorflow/nmt 的开发环境搭建](tensorflow_nmt_env_with_docker.md)  
 * [tensorflow/nmt 的整体结构](tensorflow_nmt_arch.md)  
-* [tensorflow/nmt 的超参数](tensorflow_nmt_hparams.md)    
+* [tensorflow/nmt 的超参数](tensorflow_nmt_hparams.md) 
+* [tensorflow/nmt 的词嵌入(Word Embedding)](tensorflow_nmt_word_embedding.md)   
 * [tensorflow/nmt 的数据处理过程](tensorflow_nmt_dataset_process.md)  
 * [tensorflow/nmt 的基本模型](tensorflow_nmt_standard_model.md)  
 * [tensorflow/nmt 的attention模型](tensorflow_nmt_attention_model.md)  
