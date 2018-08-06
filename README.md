@@ -6,6 +6,8 @@
 * [Deep Learning](deep_learning/index.md)
 * [Tensorflow nmt源码解析](tensorflow_nmt/tensorflow_nmt_index.md) 
 * [Machine learning笔记](machine_learning_notes/index.md) 
+    * [Linear classify笔记](machine_learning_notes/linear_classify.md)
+    * [Logistic regression笔记](machine_learning_notes/logistic_regression.md)
 * [Go语言](golang/README.md)  
 * [Java语言](java/README.md)  　　
 * [Android应用](android/README.md)    
